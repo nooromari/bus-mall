@@ -9,19 +9,22 @@ let leftImg = document.getElementById('left');
 let centerImg = document.getElementById('center');
 let rightImg = document.getElementById('right');
 let list = document.getElementById('list');
-// let button = document.getElementById('button');
 
 function randomIndex(){
   let randomIndex = Math.floor(Math.random() * objectArr.length);
   return randomIndex;
 }
 
+let nameArr =[];
+let votesArr =[];
+let viewsArr =[];
 let objectArr = [];
 function Product (name, src){
   this.name = name;
   this.src = src;
   this.votes = 0;
   this.views = 0;
+  nameArr.push(this.name);
   objectArr.push(this);
 }
 
@@ -49,31 +52,35 @@ new Product ('wine-glass','img/wine-glass.jpg');
 let leftIndex;
 let centerIndex;
 let rightIndex;
+let imgDiff=[];
+let boolean=true;
 function renderImages(){
   leftIndex = randomIndex();
   centerIndex = randomIndex();
   rightIndex = randomIndex();
-  while((leftIndex === rightIndex)||(leftIndex===centerIndex)||(centerIndex===rightIndex)){
+
+  while((leftIndex === rightIndex)||(leftIndex===centerIndex)||(centerIndex===rightIndex)||(imgDiff.includes(leftIndex))||(imgDiff.includes(centerIndex))||(imgDiff.includes(rightIndex))){
     leftIndex = randomIndex();
     centerIndex = randomIndex();
+    rightIndex = randomIndex();
   }
   leftImg.setAttribute('src', objectArr[leftIndex].src);
   centerImg.setAttribute('src', objectArr[centerIndex].src);
   rightImg.setAttribute('src', objectArr[rightIndex].src);
+  objectArr[leftIndex].views++;
+  objectArr[centerIndex].views++;
+  objectArr[rightIndex].views++;
+  imgDiff=[leftIndex,centerIndex,rightIndex];
+  console.log(imgDiff);
 }
+
 
 renderImages();
 
 container.addEventListener('click',favoriteProduct);
-// leftImg.addEventListener('click',favoriteProduct);
-// centerImg.addEventListener('click',favoriteProduct);
-// rightImg.addEventListener('click',favoriteProduct);
 
 function favoriteProduct(event){
   attempts++;
-  objectArr[leftIndex].views++;
-  objectArr[centerIndex].views++;
-  objectArr[rightIndex].views++;
   console.log(attempts);
   if(attempts <= maxClicks){
     if(event.target.id === 'left'){
@@ -89,12 +96,10 @@ function favoriteProduct(event){
   }
   if(attempts === maxClicks){
     container.removeEventListener('click',favoriteProduct);
-    // leftImg.removeEventListener('click',favoriteProduct);
-    // centerImg.removeEventListener('click',favoriteProduct);
-    // rightImg.removeEventListener('click',favoriteProduct);
   }
 
 }
+
 
 function viewResults(){
   if(attempts === maxClicks){
@@ -105,7 +110,29 @@ function viewResults(){
       li = document.createElement('li');
       ulEl.appendChild(li);
       li.textContent = `${objectArr[i].name} had ${objectArr[i].votes} votes, and was seen ${objectArr[i].views} times.`;
+
+      votesArr.push(objectArr[i].votes);
+      viewsArr.push(objectArr[i].views);
     }
+
     attempts=0;
+    var mallChart = document.getElementById('mallChart').getContext('2d');
+    var chart = new Chart(mallChart, {
+      type: 'bar',
+      data: {
+        labels: nameArr,
+        datasets: [{
+          label: 'Votes',
+          backgroundColor: '#75cfb8',
+          data: votesArr,
+        },{
+          label: 'Views',
+          backgroundColor: '#f2c6b4',
+          data:viewsArr,
+
+        }]
+      },
+    }
+    );
   }
 }
