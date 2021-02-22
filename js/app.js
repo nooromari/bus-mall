@@ -3,11 +3,13 @@
 let maxClicks = 25;
 let attempts = 0;
 
+let container = document.getElementById('container');
+
 let leftImg = document.getElementById('left');
 let centerImg = document.getElementById('center');
 let rightImg = document.getElementById('right');
 let list = document.getElementById('list');
-let button = document.getElementById('button');
+// let button = document.getElementById('button');
 
 function randomIndex(){
   let randomIndex = Math.floor(Math.random() * objectArr.length);
@@ -62,10 +64,10 @@ function renderImages(){
 
 renderImages();
 
-leftImg.addEventListener('click',favoriteProduct);
-centerImg.addEventListener('click',favoriteProduct);
-rightImg.addEventListener('click',favoriteProduct);
-button.addEventListener('click',viewResults);
+container.addEventListener('click',favoriteProduct);
+// leftImg.addEventListener('click',favoriteProduct);
+// centerImg.addEventListener('click',favoriteProduct);
+// rightImg.addEventListener('click',favoriteProduct);
 
 function favoriteProduct(event){
   attempts++;
@@ -86,20 +88,24 @@ function favoriteProduct(event){
 
   }
   if(attempts === maxClicks){
-    leftImg.removeEventListener('click',favoriteProduct);
-    centerImg.removeEventListener('click',favoriteProduct);
-    rightImg.removeEventListener('click',favoriteProduct);
+    container.removeEventListener('click',favoriteProduct);
+    // leftImg.removeEventListener('click',favoriteProduct);
+    // centerImg.removeEventListener('click',favoriteProduct);
+    // rightImg.removeEventListener('click',favoriteProduct);
   }
 
 }
 
-function viewResults(event){
-  let ulEl = document.createElement('ul');
-  list.appendChild(ulEl);
-  let li;
-  for(let i = 0 ; i < objectArr.length; i++){
-    li = document.createElement('li');
-    ulEl.appendChild(li);
-    li.textContent = `${objectArr[i].name} had ${objectArr[i].votes} votes, and was seen ${objectArr[i].views} times.`;
+function viewResults(){
+  if(attempts === maxClicks){
+    let ulEl = document.createElement('ul');
+    list.appendChild(ulEl);
+    let li;
+    for(let i = 0 ; i < objectArr.length; i++){
+      li = document.createElement('li');
+      ulEl.appendChild(li);
+      li.textContent = `${objectArr[i].name} had ${objectArr[i].votes} votes, and was seen ${objectArr[i].views} times.`;
+    }
+    attempts=0;
   }
 }
