@@ -19,3 +19,7 @@ button {
     background-color:rgb(15, 88, 64) ;
     color: azure;
 }
+button:hover{
+    background-color: azure;
+    color:rgb(15, 88, 64) ;
+}

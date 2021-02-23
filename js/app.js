@@ -53,7 +53,6 @@ let leftIndex;
 let centerIndex;
 let rightIndex;
 let imgDiff=[];
-let boolean=true;
 function renderImages(){
   leftIndex = randomIndex();
   centerIndex = randomIndex();
@@ -80,18 +79,23 @@ renderImages();
 container.addEventListener('click',favoriteProduct);
 
 function favoriteProduct(event){
-  attempts++;
+
   console.log(attempts);
   if(attempts <= maxClicks){
     if(event.target.id === 'left'){
       objectArr[leftIndex].votes++;
+      attempts++;
+      renderImages();
     }else if(event.target.id === 'center'){
       objectArr[centerIndex].votes++;
+      attempts++;
+      renderImages();
     }
-    else{
+    else if(event.target.id === 'right'){
       objectArr[rightIndex].votes++;
+      attempts++;
+      renderImages();
     }
-    renderImages();
 
   }
   if(attempts === maxClicks){
