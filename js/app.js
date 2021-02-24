@@ -49,7 +49,6 @@ new Product ('usb','img/usb.gif');
 new Product ('water-can','img/water-can.jpg');
 new Product ('wine-glass','img/wine-glass.jpg');
 
-// console.log(objectArr);
 
 let leftIndex;
 let centerIndex;
@@ -101,6 +100,7 @@ function favoriteProduct(event){
   }
   if(attempts === maxClicks){
     container.removeEventListener('click',favoriteProduct);
+    saveVotes();
   }
 }
 let ulEl;
@@ -108,7 +108,6 @@ let li;
 
 function viewResults(){
   if(attempts === maxClicks){
-    getVotes();
     ulEl = document.createElement('ul');
     list.appendChild(ulEl);
     for(let i = 0 ; i < objectArr.length; i++){
@@ -140,22 +139,18 @@ function viewResults(){
 }
 
 function saveVotes(){
+  if (result){
+    for(let i = 0 ; i < objectArr.length; i++){
+      objectArr[i].votes=parseInt( result[i].votes)+ parseInt( objectArr[i].votes);
+      objectArr[i].views=parseInt( result[i].views)+ parseInt( objectArr[i].views);
+    }
+  }
   let votesNum = JSON.stringify(objectArr);
   localStorage.setItem('votesNum', votesNum);
-  console.log(objectArr);
 }
-
+let result;
 function getVotes(){
-  saveVotes();
   let gettingVotes = localStorage.getItem('votesNum');
-  let result = JSON.parse(gettingVotes);
-  if(result){
-    objectArr = result;
-    console.log(objectArr);
-  }else{
-    console.log(result);
-    objectArr = [];
-  }
+  result = JSON.parse(gettingVotes);
 }
-// getVotes();
-
+getVotes();
