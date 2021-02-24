@@ -1,7 +1,7 @@
 'use strict';
 
 let maxClicks = 25;
-let attempts = 0;
+let attempts = 1;
 
 let container = document.getElementById('container');
 
@@ -49,6 +49,7 @@ new Product ('usb','img/usb.gif');
 new Product ('water-can','img/water-can.jpg');
 new Product ('wine-glass','img/wine-glass.jpg');
 
+
 let leftIndex;
 let centerIndex;
 let rightIndex;
@@ -79,7 +80,7 @@ renderImages();
 container.addEventListener('click',favoriteProduct);
 
 function favoriteProduct(event){
-
+  event.preventDefault();
   console.log(attempts);
   if(attempts <= maxClicks){
     if(event.target.id === 'left'){
@@ -96,29 +97,26 @@ function favoriteProduct(event){
       attempts++;
       renderImages();
     }
-
   }
   if(attempts === maxClicks){
     container.removeEventListener('click',favoriteProduct);
+    saveVotes();
   }
-
 }
-
+let ulEl;
+let li;
 
 function viewResults(){
   if(attempts === maxClicks){
-    let ulEl = document.createElement('ul');
+    ulEl = document.createElement('ul');
     list.appendChild(ulEl);
-    let li;
     for(let i = 0 ; i < objectArr.length; i++){
       li = document.createElement('li');
       ulEl.appendChild(li);
-      li.textContent = `${objectArr[i].name} had ${objectArr[i].votes} votes, and was seen ${objectArr[i].views} times.`;
-
       votesArr.push(objectArr[i].votes);
       viewsArr.push(objectArr[i].views);
+      li.textContent = `${objectArr[i].name} had ${objectArr[i].votes} votes, and was seen ${objectArr[i].views} times.`;
     }
-
     attempts=0;
     var mallChart = document.getElementById('mallChart').getContext('2d');
     var chart = new Chart(mallChart, {
@@ -133,10 +131,26 @@ function viewResults(){
           label: 'Views',
           backgroundColor: '#f2c6b4',
           data:viewsArr,
-
         }]
       },
     }
     );
   }
 }
+
+function saveVotes(){
+  if (result){
+    for(let i = 0 ; i < objectArr.length; i++){
+      objectArr[i].votes=parseInt( result[i].votes)+ parseInt( objectArr[i].votes);
+      objectArr[i].views=parseInt( result[i].views)+ parseInt( objectArr[i].views);
+    }
+  }
+  let votesNum = JSON.stringify(objectArr);
+  localStorage.setItem('votesNum', votesNum);
+}
+let result;
+function getVotes(){
+  let gettingVotes = localStorage.getItem('votesNum');
+  result = JSON.parse(gettingVotes);
+}
+getVotes();
